@@ -1,0 +1,42 @@
+name: Destroy Terraform Provisional
+
+on:
+  workflow_dispatch:   
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3 
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: "us-east-1"
+
+    - name: Terraform Init
+      run: terraform init  
+      working-directory: ./ArchivosTf   
+
+    - name: Descargar tfstate desde el bucket de S3
+      run: aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/terraform.tfstate terraform.tfstate --region us-east-1
+      working-directory: ./ArchivosTf
+
+    - name: Vaciar el bucket de S3 antes de destruirlo
+      run: aws s3 rm s3://${{ secrets.AWS_S3_BUCKET }}/ --recursive --region us-east-1   
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
+      working-directory: ./ArchivosTf
+
+    - name: Eliminar el archivo terraform.tfstate del repositorio
+      run: rm terraform.tfstate 
+      working-directory: ./ArchivosTf
