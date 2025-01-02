@@ -73,7 +73,6 @@ resource "aws_ecs_task_definition" "apache_tarea" {
         "-c",
         "aws s3 cp s3://${var.s3}/index.html /var/www/html/index.html --region us-east-1 && aws s3 cp s3://${var.s3}/Pagina /var/www/html/Pagina --recursive --region us-east-1 && apt-get update && apt-get install -y apache2 && service apache2 start && tail -f /dev/null"
       ],
-      ],
       "environment": [
         {"name": "VARNAME", "value": "VARVAL"}
       ],
