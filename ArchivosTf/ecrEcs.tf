@@ -8,39 +8,29 @@ resource "aws_ecr_repository" "repositorio_ecr" {
   }
 }
 
+resource "null_resource" "build_and_push_images" {
+  depends_on = [aws_ecr_repository.repositorio_ecr]
+
+  provisioner "local-exec" {
+    command = <<EOT
+
+      aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${aws_ecr_repository.repositorio_ecr.repository_url}
+
+      docker build -t img-apachenodenpm .
+      docker tag img-apachenodenpm:latest ${aws_ecr_repository.repositorio_ecr.repository_url}:img-apachenodenpm
+      docker push ${aws_ecr_repository.repositorio_ecr.repository_url}:img-apachenodenpm
+
+      docker build -t img-jsonserver -f ./Dockerfile.json-server .
+      docker tag img-jsonserver:latest ${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver
+      docker push ${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver
+    EOT
+  }
+}
+
 # Referencia al rol IAM existente en mi cuenta de aws que es (LabRole) usando su ARN
 data "aws_iam_role" "labrole" {
   name = "LabRole"
 }
-
-#--------------------POLÍTICA DEL IAM--------------------
-#la politica otorga a ecr acceso a s3
-resource "aws_iam_policy" "ecs_task_policy" {
-  name        = "ecs_task_policy"
-  description = "permitir acceso a S3 para las tareas de ECR"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action   = "s3:GetObject"
-        Effect   = "Allow"
-        Resource = "arn:aws:s3:::${var.s3}/"
-      },
-    ]
-  })
-}
-
-#--------------------FIN POLÍTICA DEL IAM--------------------
 
 #definición de la tarea de ecs
 resource "aws_ecs_task_definition" "apache_tarea" {
