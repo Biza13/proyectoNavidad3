@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cervezas</title>
+    <!-- -----FONTS----- -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair:opsz@5..1200&family=Prata&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+MX+Guides&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- -----FIN FONTS----- -->
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./assets/imgs/favicon.png" type="image/png">
+</head>
+<body>
+
+    <header class="cabecera">
+        <img src="./assets/imgs/DuffmanA.png" alt="DuffmanA" class="cabecera__duffmanA">
+        <img src="./assets/imgs/Beer.png" alt="Título" class="cabecera__titulo">
+        <img src="./assets/imgs/Duffman.png" alt="Duffman" class="cabecera__duffman">
+    </header>
+
+    <main class="cervezas">
+
+        <nav>
+            <ul>
+                <li><a href="#" class="ale">Ales</a></li>
+                <li><a href="#" class="stouts">Stouts</a></li>
+            </ul>
+        </nav>
+
+        <div id="cervezas__filtro">
+            <p>Si filtras por puntuación, ten en cuenta que la máxima puntuación es 5</p>
+            <form onsubmit="return false" id="cervezas__filtro__form">
+                Por que quieres filtrar?
+
+                <select name="tipo" id="tipo">
+                    <option value="ale">Ale</option>
+                    <option value="stouts">Stouts</option>
+                </select>
+
+                <select name="select" id="select">
+                    <option value="price">Precio</option>
+                    <option value="average">Puntuación</option>
+                    <option value="reviews">Reviews</option>
+                </select>
+
+                <select name="operando" id="operando">
+                    <option value=">">Mayor que</option>
+                    <option value="<">Menor que</option>
+                    <option value="==">igual</option>
+                </select>
+
+                <input type="text" placeholder="Introduzca una cantidad" name="cantidad" id="cantidad">
+                <button type="filtrar" id="filtrar" class="filtrar">Filtrar</button>
+            </form>
+            <button type="submit" id="carrito" name="carrito">Ver Carrito</button>
+        </div>
+
+        <h2 class="cervezas__titulo">Elija el tipo de cerveza</h2>
+
+        <h3 class="cervezas__mensaje"></h3>
+
+        <section class="cervezas__carrito"></section>
+
+        <section class="cargando">Cargando...</section>
+    </main>
+    <script src="./main.js"></script>
+</body>
+</html>

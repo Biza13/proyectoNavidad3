@@ -1,0 +1,548 @@
+/*Fuentes*/
+@import url('https://fonts.googleapis.com/css2?family=Playfair:opsz@5..1200&family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+MX+Guides&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/*Variables*/
+:root {
+    --color-background: rgb(195, 194, 194);
+    --color-cabecera: rgb(235, 235, 139);
+    --fuente-principal: "kanit", sans-serif;
+    --ancho-contenedor: 90%;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: var(--color-background);
+}
+
+/*----------ESTILOS DE LA PÁGINA DE LOGIN----------*/
+#login{
+    overflow-x: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#login .contenedora h1{
+    text-align: center;
+    font-size: 4em;
+}
+
+#login input[type="checkbox"]{
+    display: none;
+}
+
+#login input[type="text"]{
+    padding: 0 5px;
+}
+
+#login input[type="password"]{
+    padding: 0 5px;
+}
+
+#login .label{
+    margin: 1em auto;
+    width: 25%;
+    height: 3em;
+    background-color: rgb(75, 75, 75);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    font-family: var(--fuente-principal);
+}
+
+#login .contenedora__formulario{
+    width: 50%;
+    margin: 0 auto;
+    transform: translateX(200%);
+    transition: transform 1s linear;
+}
+
+.contenedora__formulario__seguridad__codigo{
+    margin: 10px auto;
+}
+
+.contenedora__formulario__seguridad{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.contenedora__formulario__seguridad__form{
+    margin: 10px auto;
+}
+
+#login #formulario{
+    width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#login #casilla:checked ~ .contenedora__formulario{
+    transform: translateX(0);
+}
+
+.contenedora__formulario__boton{
+    position: relative;
+}
+
+.contenedora__formulario__boton #entrar{
+    width: 105px;
+    height: 2em;
+    padding: 5px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--color-background);
+}
+
+.contenedora__formulario__boton #entrar b{
+    position: absolute;
+    z-index: 5;
+    top: 5px;
+    left: 35px;
+}
+
+.contenedora__formulario__boton #registrarse{
+    width: 105px;
+    height: 2em;
+    padding: 5px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--color-background);
+}
+
+.contenedora__formulario__boton #registrarse b{
+    position: absolute;
+    z-index: 5;
+    top: 5px;
+    left: 15px;
+}
+
+.contenedora__formulario__boton::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background-color: var(--color-cabecera);
+    clip-path: circle(0 at top left);
+    transition: all 0.5s;
+}
+
+.contenedora__formulario__boton:hover::before{
+    clip-path: circle(200% at top left);
+    border: 1px solid black;
+}
+
+#redirigir{
+    margin-left: 2em;
+    padding: 5px 20px;
+    border-radius: 10px;
+}
+
+#redirigir:hover{
+    background-color: var(--color-cabecera);
+    box-shadow: 0 0 8px black inset;
+    
+}
+
+#login form input{
+    border: 1px solid rgb(0, 0, 0);
+    background-color: rgb(228, 162, 162);
+    height: 1.8em;
+}
+
+#login form input:hover{
+    box-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+
+#login form input:focus{
+    background-color: rgb(224, 233, 145);
+}
+
+.contenedora__divSeguridad{
+    text-align: center;
+    display: none;
+}
+
+.contenedora__codigo{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/*----------ESTILOS DE LA GALERÍA página del login----------*/
+.contenedora__galeria{
+    margin: 0 auto;
+    width: var(--ancho-contenedor);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 10% 20% 20% 20% 20%;
+    place-items: center;
+    gap: 10px;
+}
+
+.contenedora__galeria img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.contenedora__galeria__titulo{
+    grid-column: 1/-1;
+    font-size: 40px;
+    object-fit: cover;
+}
+
+.contenedora__galeria__titulo2{
+    grid-column: 1/-2;
+    font-size: 40px;
+    object-fit: cover;
+}
+
+.contenedora__galeria__1{
+    grid-column: 1/3;
+}
+
+.contenedora__galeria__2{
+    grid-column: 3/4;
+    grid-row: 2/3;
+}
+
+.contenedora__galeria__3{
+    grid-column: 4/5;
+    grid-row: 2/4;
+}
+
+.contenedora__galeria__4{
+    grid-column: 5/-1;
+    grid-row: 2/3;
+}
+
+.contenedora__galeria__5{
+    grid-column: 1/2;
+    grid-row: 3/5;
+    max-width: 60%;
+}
+
+.contenedora__galeria__6{
+    grid-column: 2/4;
+    grid-row: 3/4;
+}
+
+.contenedora__galeria__7{
+    grid-column: 5/-1;
+    grid-row: 3/4;
+}
+
+.contenedora__galeria__8{
+    grid-column: 2/3;
+    grid-row: 4/5;
+}
+
+.contenedora__galeria__9{
+    grid-column: 3/5;
+    grid-row: 4/5;
+}
+
+.contenedora__galeria__10{
+    grid-column: 5/-1;
+    grid-row: 4/-1;
+}
+
+/*----------ESTILOS DEL HEADER----------*/
+header{
+    width: 100%;
+    height: 200px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+header:before{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-cabecera);
+    filter: blur(10px);
+    z-index: 0;
+}
+
+header img{
+    position: absolute;
+}
+
+.cabecera__titulo{
+    max-height: 200px;
+    text-align: center;
+    display: block;
+}
+
+.cabecera__duffmanA{
+    transform: translateX(-550px);
+    max-height: 200px;
+    animation: mover 1s linear infinite;
+}
+
+.cabecera__duffman{
+    transform: translateX(550px);
+    max-height: 200px;
+    animation: moverA 1s linear infinite;
+}
+
+@keyframes moverA {
+    0% {
+        transform: translateX(550px);
+    }
+    50% {
+        transform: translateX(500px);
+    }
+    100% {
+        transform: translateX(550px);
+    }
+}
+
+@keyframes mover {
+    0% {
+        transform: translateX(-550px);
+    }
+    50% {
+        transform: translateX(-500px);
+    }
+    100% {
+        transform: translateX(-550px);
+    }
+}
+
+
+/*----------ESTILOS DEL NAV----------*/
+nav{
+    width: 100%;
+    height: 40px;
+    background-color: black;
+}
+
+nav ul{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+nav ul li{
+    display: inline-block;
+    width: 10%;
+    text-align: center;
+    background-color: transparent;
+    position: relative;
+}
+
+nav ul li a{
+    color: white;
+    text-decoration: none;
+    line-height: 40px;
+    font-family: var(--fuente-principal);
+}
+
+nav ul li::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background-color: var(--color-cabecera);
+    clip-path: circle(0 at top left);
+    transition: all 0.5s;
+}
+
+nav ul li:hover::before{
+    clip-path: circle(200% at top left);
+}
+
+nav ul li:hover .ale{
+    color: black;
+    position: absolute;
+    z-index: 5;
+    left: 40%;
+}
+
+nav ul li:hover .stouts{
+    color: black;
+    position: absolute;
+    z-index: 5;
+    left: 35%;
+}
+
+/*----------ESTILOS DE LA SECTION CONTENEDORA página cervezas----------*/
+.cervezas{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.cervezas__titulo{
+    text-align: center;
+    font-size: 4em;
+    margin: 20px auto;
+    transform: translateX(-200%);
+    animation: moverTitulo 1s linear forwards;
+}
+
+@keyframes moverTitulo {
+    from{
+        transform: translateX(-200%);
+    }
+
+    to{
+        transform: translateX(0);
+    }
+}
+
+#contenedora{
+    margin: 50px 50px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+#contenedora article{
+    background-color: rgb(230, 227, 227);
+    border: 1px solid black;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    box-shadow: 0 0 10px black;
+    font-family: "Playwrite MX Guides", serif;
+    font-style: italic;
+}
+
+#contenedora article:hover{
+    box-shadow: 0 0 10px rgb(0, 0, 0) inset;
+}
+
+#contenedora article:hover img{
+    transform: scale(1.1);
+}
+
+#contenedora article img{
+    padding: 10px 0;
+    grid-column: 2/4;
+    justify-self: center;
+    align-self: center;
+    transform: scale(1);
+    transition: transform 0.5s linear;
+}
+
+#contenedora article div{
+    grid-row: 2/3;
+    grid-column: 1/-1;
+    padding: 0 20px;
+    justify-self: center;
+    align-self: center;
+}
+
+#cervezas__filtro{
+    margin: 20px 20px;
+    position: relative;
+}
+
+#cervezas__filtro form{
+    margin: 10px auto;
+}
+
+#filtrar{
+    width: 5%;
+    margin-left: 15px;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 8px black;
+    height: 1.8em;
+}
+
+#filtrar:hover{
+    background-color: var(--color-cabecera);
+    box-shadow: 0 0 8px black inset;
+}
+
+#carrito{
+    position: absolute;
+    right: 100px;
+    top: 0;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 8px black;
+    width: 8%;
+    height: 1.8em;
+}
+
+#carrito:hover{
+    background-color: var(--color-cabecera);
+    box-shadow: 0 0 8px black inset;
+}
+
+.cervezas__mensaje{
+    text-align: center;
+    color: red;
+    font-size: 50px;
+}
+
+/*----------ESTILOS DEL MAIN secction carrito----------*/
+.cervezas__carrito{
+    width: 50%;
+    margin: 1em auto;
+    text-align: center;
+}
+
+.cervezas__carrito__tabla{
+    margin: 0 auto;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 8px var(--color-cabecera);
+}
+
+.cervezas__carrito__tabla caption{
+    margin: 1em auto;
+    font-size: 30px;
+    font-weight: bold;
+    text-shadow: 0 0 8px black;
+    color: var(--color-cabecera);
+}
+
+.cervezas__carrito__tabla td{
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.cervezas__carrito__tabla td, th{
+    padding: 0 15px;
+}
+
+.cervezas__carrito__tabla tr:nth-child(odd){
+    background-color: rgb(160, 160, 160);
+}
+
+#borrarCarrito{
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid black;
+    box-shadow: 0 0 8px black;
+}
+
+#borrarCarrito:hover{
+    background-color: var(--color-cabecera);
+    box-shadow: 0 0 8px black inset;
+}
+
+.cargando{
+    display: none;
+    text-align: center;
+}
+
+/*--------------------Responsive--------------------*/
+/*@media

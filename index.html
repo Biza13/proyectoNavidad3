@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="./Pagina/style.css">
+    <link rel="icon" href="./Pagina/assets/imgs/favicon.png" type="image/png">
+</head>
+<body id="login">
+    <header class="cabecera">
+        <img src="./Pagina/assets/imgs/DuffmanA.png" alt="DuffmanA" class="cabecera__duffmanA">
+        <img src="./Pagina/assets/imgs/Beer.png" alt="Título" class="cabecera__titulo">
+        <img src="./Pagina/assets/imgs/Duffman.png" alt="Duffman" class="cabecera__duffman">
+    </header>
+    <main class="contenedora">
+        <h1>Bienvenido a nuestra página de cervezas, porfavor identifíquese</h1>
+
+            <input type="checkbox" name="casilla" id="casilla">
+            <label for="casilla" class="label"> 🍺 Presione la cerveza si es mayor de edad</label>
+        
+        <section class="contenedora__formulario">
+            <form onsubmit="return false" id="formulario" class="formulario">
+                <div class="nombre">
+                    <label for="nombre" class="nombre">Nombre:</label>
+                    <input type="text" name="nombre" id="nombre">
+                </div>
+            
+                <div class="cont">
+                    <label for="cont" class="cont">Contraseña:</label>
+                    <input type="password" name="cont" id="cont">
+                </div>
+
+                <div class="contenedora__formulario__boton">
+                    <button type="submit" name="entrar" id="entrar"><b>Entrar</b></button>
+                </div>
+
+                <div class="contenedora__formulario__boton">
+                    <button type="submit" name="registrarse" id="registrarse"><b>Registrarse</b></button>
+                </div>
+            </form>
+            <article class="contenedora__codigo">
+
+            </article>
+            <div class="contenedora__divSeguridad">
+                <form onsubmit="return false" id="contenedora__divSeguridad__form">
+                    <label for="seguridad">Introduzca el código proporciando: </label>
+                    <input type="text" name="seguridad" id="seguridad">
+                    <button type="submit" name="redirigir" id="redirigir">Acceder</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="contenedora__galeria">
+            <h3 class="contenedora__galeria__titulo">Aquí podrá encontrar cientos de nustras cervezas</h3>
+            <img src="./Pagina/assets/galeria/1.png" alt="cerveza" class="contenedora__galeria__1">
+            <img src="./Pagina/assets/galeria/2.jpg" alt="cerveza" class="contenedora__galeria__2">
+            <img src="./Pagina/assets/galeria/3.jpeg" alt="cerveza" class="contenedora__galeria__3">
+            <img src="./Pagina/assets/galeria/4.jpeg" alt="cerveza" class="contenedora__galeria__4">
+            <img src="./Pagina/assets/galeria/5.jpeg" alt="cerveza" class="contenedora__galeria__5">
+            <img src="./Pagina/assets/galeria/6.jpeg" alt="cerveza" class="contenedora__galeria__6">
+            <img src="./Pagina/assets/galeria/7.jpeg" alt="cerveza" class="contenedora__galeria__7">
+            <img src="./Pagina/assets/galeria/8.jpeg" alt="cerveza" class="contenedora__galeria__8">
+            <img src="./Pagina/assets/galeria/9.jpeg" alt="cerveza" class="contenedora__galeria__9">
+            <img src="./Pagina/assets/galeria/10.jpeg" alt="cerveza" class="contenedora__galeria__10">
+            <h3 class="contenedora__galeria__titulo2">Elije las tuyas</h3>
+        </section>
+    </main>
+    <script src="./Pagina/mainLogin.js"></script>
+</body>
+</html>
