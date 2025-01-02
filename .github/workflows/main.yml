@@ -1,0 +1,143 @@
+name: CI/CD a tope
+
+# Evento para que se deployee cuando se hace el push
+# on:
+#   push:
+#     branches:
+#       - main
+
+# Este evento es para que solo se deployee si se lo digo manualmente
+on:
+  workflow_dispatch:
+
+jobs:
+  # Job para desplegar infraestructura de Terraform
+  despliegue:
+    runs-on: ubuntu-latest
+    
+    outputs:
+      bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
+      ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
+      ecr_nombre_repositorio: ${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}
+      
+    steps:
+      # Este paso copia lo que hay en la rama main en la máquina virtual de Ubuntu
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"
+          
+      # Este paso es para instalar Terraform en la máquina virtual
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        id: init
+        run: terraform init
+        working-directory: ./ArchivosTf
+       
+      - name: Plan Terraform
+        run: terraform plan
+        working-directory: ./ArchivosTf
+  
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./ArchivosTf
+
+      #subir archivos al bucket para luego pasarlos a los contenedores
+      - name: Subir tfstate al bucket de S3
+        run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1 
+        working-directory: ./ArchivosTf
+
+      - name: Subir archivos al s3
+        run: |
+          aws s3 cp ./index.html s3://$(terraform output -raw s3) --region us-east-1 
+          aws s3 cp ./Pagina s3://$(terraform output -raw s3)/Pagina --recursive --region us-east-1
+          aws s3 cp ./archivosJson s3://$(terraform output -raw s3)/archivosJson --recursive --region us-east-1
+
+      # Capturar los outputs de Terraform y hacerlos como outputs del job
+      - name: Capturar output de Terraform (Bucket)
+        id: capturar_bucket
+        run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
+        working-directory: ./ArchivosTf
+
+      - name: Capturar URI del repositorio ECR
+        id: capturar_ecr_uri_url
+        run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_OUTPUT"
+        working-directory: ./ArchivosTf
+
+      - name: Capturar nombre del repositorio ECR
+        id: capturar_ecr_nombre
+        run: echo "ecr_nombre_repositorio=$(terraform output -raw ecr_nombre_repositorio)" >> "$GITHUB_OUTPUT"
+        working-directory: ./ArchivosTf 
+
+      #crear artefactos con el nombre del bucket y con el nombre del repositorio
+      - name: Crear archivo con el nombre del bucket
+        run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./bucket_name.txt
+
+      - name: Crear archivo con el nombre del repositorio ECR
+        run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./ecr_name.txt
+
+      # Subir los archivos como artefactos
+      - name: Subir artefactos con el nombre del bucket y el repositorio ECR
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: nombre bucket artefacto
+          path: ./bucket_name.txt 
+
+      - name: Subir artefactos con el nombre del bucket y el repositorio ECR
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: nombre ecr artefacto
+          path: ./ecr_name.txt    
+
+  # Segundo job para crear imagenes de Docker y subirlas a la ECR
+  creacion-y-subida-de-imagen:
+    runs-on: ubuntu-latest
+    needs: despliegue
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciales de AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"
+      
+      # Logearse en la ECR
+      - name: Logearse en AWS ECR
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ needs.despliegue.outputs.ecr_repository_uri_url }}
+
+      # Construir la imagen Docker para alojar la web
+      - name: Construir imagen Docker
+        run: docker build -t img-apachenodenpm .
+
+      # Etiquetar la imagen Docker de la web
+      - name: Etiquetar imagen Docker
+        run: docker tag img-apachenodenpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-apachenodenpm  
+
+      # Subir la imagen Docker a ECR de la web
+      - name: Subir imagen Docker a ECR
+        run: docker push ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-apachenodenpm
+
+      # Construir la imagen Docker para servidor json al tener otro nombre diferente a dockerfile hay que definirlo con el -f
+      - name: Construir imagen Docker
+        run: docker build -t img-jsonserver -f Dockerfile.json-server .  
+
+      # Etiquetar la imagen Docker del server json
+      - name: Etiquetar imagen Docker
+        run: docker tag img-jsonserver:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-jsonserver
+      
+      # Subir la imagen Docker a ECR del server json
+      - name: Subir imagen Docker a ECR
+        run: docker push ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-jsonserver
