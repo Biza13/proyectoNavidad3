@@ -53,17 +53,17 @@ jobs:
       #  run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1 
       #  working-directory: ./ArchivosTf
 
-      - name: Subir archivos al s3
-        run: |
-          aws s3 cp ./index.html s3://$(terraform output -raw s3) --region us-east-1 
-          aws s3 cp ./Pagina s3://$(terraform output -raw s3)/Pagina --recursive --region us-east-1
-          aws s3 cp ./archivosJson s3://$(terraform output -raw s3)/archivosJson --recursive --region us-east-1
-
       # Capturar los outputs de Terraform y hacerlos como outputs del job
       - name: Capturar output de Terraform (Bucket)
         id: capturar_bucket
         run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
         working-directory: ./s3
+
+      - name: Subir archivos al s3
+        run: |
+          aws s3 cp ./index.html s3://$(terraform output -raw s3) --region us-east-1 
+          aws s3 cp ./Pagina s3://$(terraform output -raw s3)/Pagina --recursive --region us-east-1
+          aws s3 cp ./archivosJson s3://$(terraform output -raw s3)/archivosJson --recursive --region us-east-1
 
       #crear artefactos con el nombre del bucket y con el nombre del repositorio
       - name: Crear archivo con el nombre del bucket
