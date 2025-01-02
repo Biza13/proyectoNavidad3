@@ -61,7 +61,7 @@ jobs:
 
       - name: Subir archivos al s3
         run: |
-          aws s3 cp ./index.html s3:/${{ secrets.AWS_S3_BUCKET }} --region us-east-1 
+          aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }} --region us-east-1 
           aws s3 cp ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina --recursive --region us-east-1
           aws s3 cp ./archivosJson s3://${{ secrets.AWS_S3_BUCKET }}/archivosJson --recursive --region us-east-1
 
