@@ -40,11 +40,6 @@ resource "aws_iam_policy" "ecs_task_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_role_policy" {
-  role       = data.aws_iam_role.labrole.name
-  policy_arn = aws_iam_policy.ecs_task_policy.arn
-}
-
 #--------------------FIN POLÍTICA DEL IAM--------------------
 
 #definición de la tarea de ecs
