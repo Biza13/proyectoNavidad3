@@ -13,6 +13,40 @@ data "aws_iam_role" "labrole" {
   name = "LabRole"
 }
 
+#--------------------POLÍTICA DEL IAM--------------------
+#la politica otorga a ecr acceso a s3
+resource "aws_iam_policy" "ecs_task_policy" {
+  name        = "ecs_task_policy"
+  description = "permitir acceso a S3 para las tareas de ECR"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action   = "s3:GetObject"
+        Effect   = "Allow"
+        Resource = "arn:aws:s3:::${var.s3}/"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_role_policy" {
+  role       = data.aws_iam_role.labrole.name
+  policy_arn = aws_iam_policy.ecs_task_policy.arn
+}
+
+#--------------------FIN POLÍTICA DEL IAM--------------------
+
 #definición de la tarea de ecs
 resource "aws_ecs_task_definition" "apache_tarea" {
 
@@ -45,16 +79,15 @@ resource "aws_ecs_task_definition" "apache_tarea" {
       "essential": true,
       "image": "ubuntu:latest",
       "memory": 512,
-      "name": "apache-web",
+      "name": "apache-container",
       "portMappings": [
         {
           "containerPort": 80,
-          "hostPort": 8080,
           "protocol": "tcp"
         }
       ]
     },
-    
+
     {
       "cpu": 256,
       "entryPoint": [
@@ -68,21 +101,18 @@ resource "aws_ecs_task_definition" "apache_tarea" {
       "essential": true,
       "image": "ubuntu:latest",
       "memory": 512,
-      "name": "json-server",
+      "name": "json-api-container",
       "portMappings": [
         {
           "containerPort": 3000,
-          "hostPort": 3000,  # Puerto del host para json-server en el contenedor
           "protocol": "tcp"
         },
         {
           "containerPort": 3001,
-          "hostPort": 3001,  # Segundo puerto del host para json-server
           "protocol": "tcp"
         },
         {
           "containerPort": 3002,
-          "hostPort": 3002,  # Tercer puerto del host para json-server
           "protocol": "tcp"
         }
       ]
