@@ -33,6 +33,11 @@ variable "s3"{
   type = string
 }
 
+variable "s3"{
+  description = "Nombre del bucket s3"
+  type = string
+}
+
 variable "ecr"{
     description = "nombre del repositorio ecr"
     type = string
