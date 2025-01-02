@@ -17,71 +17,6 @@ jobs:
     
     outputs:
       bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
-      
-    steps:
-      # Este paso copia lo que hay en la rama main en la máquina virtual de Ubuntu
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Configurar credenciales AWS
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: "us-east-1"
-          
-      # Este paso es para instalar Terraform en la máquina virtual
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform init
-        id: init
-        run: terraform init
-        working-directory: ./s3
-       
-      - name: Plan Terraform
-        run: terraform plan
-        working-directory: ./s3
-  
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: ./s3
-
-      #subir archivos al bucket para luego pasarlos a los contenedores
-      - name: Subir tfstate al bucket de S3
-        run: aws s3 cp terraform.tfstate s3://${{ secrets.AWS_S3_BUCKET }}/s3 --region us-east-1 
-        working-directory: ./s3
-
-      # Capturar los outputs de Terraform y hacerlos como outputs del job
-      - name: Capturar output de Terraform (Bucket)
-        id: capturar_bucket
-        run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
-        working-directory: ./s3
-
-      - name: Subir archivos al s3
-        run: |
-          aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }} --region us-east-1 
-          aws s3 cp ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina --recursive --region us-east-1
-          aws s3 cp ./archivosJson s3://${{ secrets.AWS_S3_BUCKET }}/archivosJson --recursive --region us-east-1
-
-      #crear artefactos con el nombre del bucket y con el nombre del repositorio
-      - name: Crear archivo con el nombre del bucket
-        run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./bucket_name.txt
-
-      # Subir los archivos como artefactos
-      - name: Subir artefactos con el nombre del bucket
-        uses: actions/upload-artifact@v4.5.0
-        with:
-          name: nombre bucket artefacto
-          path: ./bucket_name.txt  
-
-  #segundo job para el resto de la infraestructura
-  sengunda-infraestructura:
-    runs-on: ubuntu-latest
-    needs: despliegue
-
-    outputs:
       ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
       ecr_nombre_repositorio: ${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}
       
@@ -114,9 +49,16 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ./ArchivosTf
-    
+
+      #subir archivos al bucket para luego pasarlos a los contenedores
       - name: Subir tfstate al bucket de S3
-        run: aws s3 cp terraform.tfstate s3://${{ secrets.AWS_S3_BUCKET }}/resto --region us-east-1 
+        run: aws s3 cp terraform.tfstate s3://${{ secrets.AWS_S3_BUCKET }}/ --region us-east-1 
+        working-directory: ./ArchivosTf
+
+      # Capturar los outputs de Terraform y hacerlos como outputs del job
+      - name: Capturar output de Terraform (Bucket)
+        id: capturar_bucket
+        run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
         working-directory: ./ArchivosTf
 
       - name: Capturar URI del repositorio ECR
@@ -127,7 +69,18 @@ jobs:
       - name: Capturar nombre del repositorio ECR
         id: capturar_ecr_nombre
         run: echo "ecr_nombre_repositorio=$(terraform output -raw ecr_nombre_repositorio)" >> "$GITHUB_OUTPUT"
-        working-directory: ./ArchivosTf   
+        working-directory: ./ArchivosTf     
+
+      #crear artefactos con el nombre del bucket y con el nombre del repositorio
+      - name: Crear archivo con el nombre del bucket
+        run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./bucket_name.txt
+
+      # Subir los archivos como artefactos
+      - name: Subir artefactos con el nombre del bucket
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: nombre bucket artefacto
+          path: ./bucket_name.txt  
 
       - name: Crear archivo con el nombre del repositorio ECR
         run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./ecr_name.txt  
@@ -136,4 +89,4 @@ jobs:
         uses: actions/upload-artifact@v4.5.0
         with:
           name: nombre ecr artefacto
-          path: ./ecr_name.txt            
+          path: ./ecr_name.txt          
