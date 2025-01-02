@@ -69,21 +69,12 @@ jobs:
       - name: Crear archivo con el nombre del bucket
         run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./bucket_name.txt
 
-      - name: Crear archivo con el nombre del repositorio ECR
-        run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./ecr_name.txt
-
       # Subir los archivos como artefactos
-      - name: Subir artefactos con el nombre del bucket y el repositorio ECR
+      - name: Subir artefactos con el nombre del bucket
         uses: actions/upload-artifact@v4.5.0
         with:
           name: nombre bucket artefacto
-          path: ./bucket_name.txt 
-
-      - name: Subir artefactos con el nombre del bucket y el repositorio ECR
-        uses: actions/upload-artifact@v4.5.0
-        with:
-          name: nombre ecr artefacto
-          path: ./ecr_name.txt    
+          path: ./bucket_name.txt  
 
   #segundo job para el resto de la infraestructura
   sengunda-infraestructura:
@@ -138,7 +129,16 @@ jobs:
         run: echo "ecr_nombre_repositorio=$(terraform output -raw ecr_nombre_repositorio)" >> "$GITHUB_OUTPUT"
         working-directory: ./ArchivosTf   
 
-  # Segundo job para crear imagenes de Docker y subirlas a la ECR
+      - name: Crear archivo con el nombre del repositorio ECR
+        run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./ecr_name.txt  
+
+      - name: Subir artefactos con el nombre del repositorio ECR
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: nombre ecr artefacto
+          path: ./ecr_name.txt     
+
+  # tercer job para crear imagenes de Docker y subirlas a la ECR
   creacion-y-subida-de-imagen:
     runs-on: ubuntu-latest
     needs: [despliegue, sengunda-infraestructura]
