@@ -71,9 +71,8 @@ resource "aws_ecs_task_definition" "apache_tarea" {
       "entryPoint": [
         "bash",
         "-c",
-        "aws s3 cp s3://${var.s3}/index.html /var/www/html/index.html --region us-east-1 && \\
-         aws s3 cp s3://${var.s3}/Pagina /var/www/html/Pagina --recursive --region us-east-1 && \\
-         apt-get update && apt-get install -y apache2 && service apache2 start && tail -f /dev/null"
+        "aws s3 cp s3://${var.s3}/index.html /var/www/html/index.html --region us-east-1 && aws s3 cp s3://${var.s3}/Pagina /var/www/html/Pagina --recursive --region us-east-1 && apt-get update && apt-get install -y apache2 && service apache2 start && tail -f /dev/null"
+      ],
       ],
       "environment": [
         {"name": "VARNAME", "value": "VARVAL"}
@@ -95,14 +94,7 @@ resource "aws_ecs_task_definition" "apache_tarea" {
       "entryPoint": [
         "bash",
         "-c",
-        "aws s3 cp s3://${var.s3}/usuarios.json /data/usuarios.json --region us-east-1 && \\
-         aws s3 cp s3://${var.s3}/ales.json /data/ales.json --region us-east-1 && \\
-         aws s3 cp s3://${var.s3}/stouts.json /data/stouts.json --region us-east-1 && \\
-         apt-get update && apt install -y nodejs && apt install -y npm && apt install nano -y && \\
-         npm install -g json-server && json-server --watch /data/usuarios.json --port 3000 && \\
-         json-server --watch /data/ales.json --port 3001 && \\
-         json-server --watch /data/stouts.json --port 3002 && \\
-         tail -f /dev/null"
+        "aws s3 cp s3://${var.s3}/usuarios.json /data/usuarios.json --region us-east-1 && aws s3 cp s3://${var.s3}/ales.json /data/ales.json --region us-east-1 && aws s3 cp s3://${var.s3}/stouts.json /data/stouts.json --region us-east-1 && apt-get update && apt install -y nodejs && apt install -y npm && apt install nano -y && npm install -g json-server && json-server --watch /data/usuarios.json --port 3000 && json-server --watch /data/ales.json --port 3001 && json-server --watch /data/stouts.json --port 3002 && tail -f /dev/null"
       ],
       "environment": [
         {"name": "VARNAME", "value": "VARVAL"}
