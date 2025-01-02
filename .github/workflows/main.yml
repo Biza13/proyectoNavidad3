@@ -48,9 +48,6 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./s3
 
-      - name: Esperar un momento
-        run: sleep 30  # Esperar 30 segundos  
-
       #subir archivos al bucket para luego pasarlos a los contenedores
       #- name: Subir tfstate al bucket de S3
       #  run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1 
@@ -64,9 +61,9 @@ jobs:
 
       - name: Subir archivos al s3
         run: |
-          aws s3 cp ./index.html s3://$(terraform output -raw s3) --region us-east-1 
-          aws s3 cp ./Pagina s3://$(terraform output -raw s3)/Pagina --recursive --region us-east-1
-          aws s3 cp ./archivosJson s3://$(terraform output -raw s3)/archivosJson --recursive --region us-east-1
+          aws s3 cp ./index.html s3:/${{ secrets.AWS_S3_BUCKET }} --region us-east-1 
+          aws s3 cp ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina --recursive --region us-east-1
+          aws s3 cp ./archivosJson s3://${{ secrets.AWS_S3_BUCKET }}/archivosJson --recursive --region us-east-1
 
       #crear artefactos con el nombre del bucket y con el nombre del repositorio
       - name: Crear archivo con el nombre del bucket
