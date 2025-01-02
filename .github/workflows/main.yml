@@ -116,7 +116,7 @@ jobs:
         working-directory: ./ArchivosTf
     
       - name: Subir tfstate al bucket de S3
-        run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1 
+        run: aws s3 cp terraform.tfstate s3://${{ secrets.AWS_S3_BUCKET }}/resto --region us-east-1 
         working-directory: ./ArchivosTf
 
       - name: Capturar URI del repositorio ECR
